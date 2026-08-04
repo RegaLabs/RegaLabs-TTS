@@ -4,7 +4,7 @@ Private release of the reviewed Sorani frontend and inference helpers for a
 CosyVoice 3 acoustic/flow adaptation.
 
 The matching flow checkpoint is stored separately in the private Hugging Face
-repository [`requite/cosyvoice-sorani-flow`](https://huggingface.co/requite/cosyvoice-sorani-flow).
+repository [`shahryyar/cosyvoice-sorani-flow`](https://huggingface.co/shahryyar/cosyvoice-sorani-flow).
 This GitHub repository intentionally contains no datasets, manifests,
 reference recordings, generated WAVs, evaluation outputs, or model weights.
 
