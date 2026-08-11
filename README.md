@@ -1,9 +1,25 @@
+![RegaLabs-TTS Banner](https://raw.githubusercontent.com/RegaLabs/RegaLabs-TTS/main/assets/banner.jpg)
+
 # RegaLabs-TTS: CosyVoice 3 Sorani Flow Adaptation
 
 **RegaLabs-TTS** is a high-quality Central Kurdish (Sorani / سۆرانی) text-to-speech system developed by **RegaLabs** based on **CosyVoice 3**.
 
 * **GitHub Repository:** [`RegaLabs/RegaLabs-TTS`](https://github.com/RegaLabs/RegaLabs-TTS)
 * **Hugging Face Model:** [`RegaLabs/RegaLabs-TTS`](https://huggingface.co/RegaLabs/RegaLabs-TTS)
+
+---
+
+![RegaLabs-TTS Features](https://raw.githubusercontent.com/RegaLabs/RegaLabs-TTS/main/assets/features.jpg)
+
+---
+
+## 🎧 Audio Example
+
+Listen to a generated Sorani audio sample:
+
+<audio controls src="https://raw.githubusercontent.com/RegaLabs/RegaLabs-TTS/main/samples/aran_en021.wav"></audio>
+
+[🔊 Download Sample Audio WAV](https://raw.githubusercontent.com/RegaLabs/RegaLabs-TTS/main/samples/aran_en021.wav)
 
 ---
 
@@ -37,8 +53,8 @@ export COSYVOICE_REPO=$(pwd)/CosyVoice
 python run_regalabs_tts.py \
   --base-model FunAudioLLM/Fun-CosyVoice3-0.5B-2512 \
   --flow-checkpoint /path/to/cosyvoice3_sorani_flow_best_step2300.pt \
-  --prompt-wav /path/to/reference.wav \
-  --prompt-text "دەقی نموونەی دەنگەکە" \
+  --prompt-wav samples/aran_en021.wav \
+  --prompt-text "ئەمە دەنگی نموونەیە" \
   --text "سڵاو لە تەواوی كوردستان" \
   --out output_sorani.wav
 ```
@@ -58,6 +74,8 @@ python app.py
 - `sorani/batch_infer.py` — Batch regression and dataset testing runner.
 - `run_regalabs_tts.py` — Standalone execution runner.
 - `app.py` — Gradio Live Web Demo UI.
+- `samples/aran_en021.wav` — Sample audio snippet.
+- `assets/` — Project banners & graphics.
 - `setup.py` / `pyproject.toml` — Python packaging scripts.
 
 ---
