@@ -1,18 +1,39 @@
 ========================================================================
-REGALABS ATTRIBUTION & CREDIT NOTICE
+REGALABS-TTS LICENSE & TERMS OF USE
 ========================================================================
 Copyright (c) 2026 RegaLabs. All rights reserved.
 
+1. MANDATORY ATTRIBUTION & CREDIT REQUIREMENT (All Uses)
+------------------------------------------------------------------------
 Any public use, generated media (including videos, podcasts, audiobooks,
 voiceovers, TV/radio broadcasts, online content), software applications,
 or derivative works utilizing RegaLabs-TTS, its model weights, or tools
-MUST explicitly provide clear attribution and credit to RegaLabs:
+MUST explicitly provide clear, visible attribution and credit to RegaLabs:
 
   "Voice synthesized using RegaLabs-TTS by RegaLabs"
   (or "Audio powered by RegaLabs")
 
+2. MODEL WEIGHTS & CODEBASE PERMISSIONS (Commercial & Non-Commercial)
+------------------------------------------------------------------------
+The model weights/checkpoint (`cosyvoice3_sorani_flow_best_step2300.pt`),
+inference code, adaptation scripts, and associated tools are licensed under
+the Apache License, Version 2.0 (incorporating the mandatory attribution
+requirement in Section 1). Commercial and non-commercial use, distribution,
+modification, and integration of the model weights and codebase are FULLY
+PERMITTED, provided proper attribution to RegaLabs is maintained.
+
+3. STOCK VOICES & SAMPLE AUDIO RESTRICTIONS (Non-Commercial Only)
+------------------------------------------------------------------------
+All stock prompt audio clips, sample voice recordings, and pre-packaged audio
+files included in this repository (including files in the `samples/` directory
+and default demo voice prompts) are STRICTLY RESTRICTED TO NON-COMMERCIAL USE ONLY.
+
+Commercial redistribution, commercial voice cloning using the stock prompt voice
+samples, or using stock audio files for commercial products/services without prior
+written authorization from RegaLabs is strictly prohibited.
+
 ========================================================================
-APACHE LICENSE VERSION 2.0
+APACHE LICENSE VERSION 2.0 (For Codebase & Model Checkpoint)
 ========================================================================
 
                                  Apache License

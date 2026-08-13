@@ -80,9 +80,10 @@ python app.py
 
 ---
 
-## 📜 License & Attribution Requirement
+## 📜 License & Mandatory Attribution
 
-Licensed under **Apache 2.0** by **RegaLabs**. Base runtime and original model architecture belong to the upstream CosyVoice project.
+* **Model Checkpoint & Codebase:** Licensed under **Apache 2.0** by **RegaLabs**. Commercial and non-commercial use is **fully allowed**, provided mandatory credit for RegaLabs is included. Base runtime and original model architecture belong to the upstream CosyVoice project.
+* **Stock Voices & Audio Samples:** **Non-Commercial Use Only**. Pre-packaged stock prompt voice samples and demo audio files (including samples in `samples/`) are strictly restricted to non-commercial use and prohibited for commercial voice cloning/redistribution.
 
 ### 📌 Credit & Attribution Guidelines
 Any public use, generated media (videos, podcasts, audiobooks, broadcasts, or AI services), software, or derivative works utilizing **RegaLabs-TTS** MUST explicitly provide visible credit to **RegaLabs**:

@@ -176,9 +176,10 @@ with gr.Blocks(title="RegaLabs-TTS: Sorani Speech Synthesis", css=custom_css) as
         """
         ---
         ### 📜 License & Mandatory Attribution
-        **RegaLabs-TTS** is released by **RegaLabs** under Apache 2.0.
+        * **Model Checkpoint & Codebase:** **Apache 2.0** by **RegaLabs**. Commercial and non-commercial use is **fully allowed** with mandatory credit to RegaLabs.
+        * **Stock Prompt Voices & Audio Samples:** **Non-Commercial Use Only**. Pre-packaged stock voice samples are strictly restricted from commercial use/cloning.
         
-        **📌 Attribution Requirement:** Any public use, generated media (videos, podcasts, voiceovers, radio/TV), applications, or derivative works MUST explicitly credit **RegaLabs**:
+        **📌 Mandatory Credit:** Any public use, generated media (videos, podcasts, voiceovers, radio/TV), applications, or derivative works MUST explicitly credit **RegaLabs**:
         > *"Voice synthesized using RegaLabs-TTS by RegaLabs"* (or *"Audio powered by RegaLabs"*).
         """,
         elem_classes=["attribution"]
