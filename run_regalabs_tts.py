@@ -19,6 +19,7 @@ def parse_args():
     parser.add_argument("--prompt-wav", required=True, help="Path to reference audio prompt WAV")
     parser.add_argument("--prompt-text", required=True, help="Transcript of reference audio prompt")
     parser.add_argument("--flow-checkpoint", required=True, help="Path to cosyvoice3_sorani_flow_best_step2300.pt")
+    parser.add_argument("--adapter", default="", help="Path to the Sorani LLM LoRA adapter (cosyvoice3_sorani_lora_refined_best.pt, download from Hugging Face)")
     parser.add_argument("--base-model", default="FunAudioLLM/Fun-CosyVoice3-0.5B-2512", help="Hugging Face model ID or path for base model")
     parser.add_argument("--out", default="output_sorani.wav", help="Output WAV path")
     parser.add_argument("--cosyvoice-repo", default=os.environ.get("COSYVOICE_REPO", "./CosyVoice"), help="Path to cloned CosyVoice repo")
@@ -42,6 +43,19 @@ def main():
     
     print(f"Loading base model: {args.base_model}...")
     cosyvoice = CosyVoice3(args.base_model, fp16=torch.cuda.is_available())
+
+    if args.adapter:
+        if not Path(args.adapter).exists():
+            print(f"Error: adapter not found at {args.adapter}.", file=sys.stderr)
+            sys.exit(1)
+        from cosyvoice.utils.lora import inject_lora, load_lora_state_dict
+        llm = cosyvoice.model.llm
+        target_count = inject_lora(llm, rank=16, alpha=32.0, dropout=0.05)
+        load_lora_state_dict(
+            llm, torch.load(args.adapter, map_location="cpu", weights_only=False)
+        )
+        llm.to(cosyvoice.model.device).eval()
+        print(f"Loaded RegaLabs-TTS Sorani LLM adapter ({target_count} projections).")
     
     verify_checkpoint(args.flow_checkpoint)
     print(f"Loading RegaLabs-TTS Sorani flow checkpoint: {args.flow_checkpoint}...")

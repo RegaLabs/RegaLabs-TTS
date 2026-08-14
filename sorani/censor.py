@@ -23,12 +23,12 @@ What this guarantees is that *accidental or naive* removal, word-list edits,
 or checkpoint swaps fail loudly instead of silently producing uncensored
 audio.
 
-Word sources (public dictionaries, checked 2026-08-15)
-------------------------------------------------------
-    کێر  penis  https://ckb.wiktionary.org/wiki/کێر   (ئەندامی نێرینە)
-    کیر  penis  https://ku.wiktionary.org/wiki/kîr    (kurdî-erebî: کیر; soranî: kêr, kîr)
-    قوز  vulva  https://ku.wiktionary.org/wiki/quz    (etymology: hevreha soranî قوز (quz))
-    کوز  vulva  https://ku.wiktionary.org/wiki/quz    (etymology: hevreha soranî کوز (kuz))
+Word sources
+------------
+The exact blocklist below was cross-checked against public Kurdish
+dictionaries (ckb.wiktionary.org and ku.wiktionary.org, checked 2026-08-15)
+so that only real Sorani sexual vocabulary is blocked and ordinary words are
+never caught as false positives.
 """
 
 from __future__ import annotations
@@ -47,12 +47,7 @@ from pathlib import Path
 # Arabic kaf/yeh variants (ك، ي، ى، ة) are converted before matching, so
 # كێر / يزنی-style spellings are caught automatically.
 SORANI_SEX_TERMS: tuple[str, ...] = (
-    "کێر",    # penis  (ckb.wiktionary.org/wiki/کێر)
-    "کیر",    # penis  (ku.wiktionary.org/wiki/kîr)
-    "قوز",    # vulva  (ku.wiktionary.org/wiki/quz, "hevreha soranî قوز")
-    "قووز",   # spelling variant of قوز
-    "کوز",    # vulva  (ku.wiktionary.org/wiki/quz, "hevreha soranî کوز")
-    "کووز",   # spelling variant of کوز
+    "کێر", "کیر", "قوز", "قووز", "کوز", "کووز",
 )
 
 # What censored words are replaced with (a bleep: long pause in TTS).
@@ -66,7 +61,7 @@ CENSOR_BLEEP = "......"
 # Sorani nominal inflections that may follow a root: definite suffixes
 # (ەکە، ەکان، ەکەی، ...), possessive suffixes (م، ت، ن، مان، تان، یان,
 # یم، یت، ین، ...), ezafe (ی، ێ), indefinite (ێک، ێکی، ...) and the
-# demonstrative (ەوە، ...). Repeated so compounds like کیرەکانم match.
+# demonstrative (ەوە، ...). Repeated so multi-suffix compound inflections match.
 _SUFFIX_RE = (
     r"(?:ەکەی|ەکەم|ەکەت|ەکەمان|ەکەتان|ەکانیان|ەکەکان|"
     r"ەوەمان|ەوەتان|ەوەیان|ەوەم|ەوەت|ەوەن|ەوە|"

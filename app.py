@@ -65,10 +65,21 @@ def get_model():
         
         base_model = "FunAudioLLM/Fun-CosyVoice3-0.5B-2512"
         flow_ckpt = ROOT_DIR / "cosyvoice3_sorani_flow_best_step2300.pt"
+        adapter_ckpt = ROOT_DIR / "cosyvoice3_sorani_lora_refined_best.pt"
         
         print(f"Loading base CosyVoice model: {base_model}...")
         device_fp16 = torch.cuda.is_available()
         cosyvoice = CosyVoice3(base_model, fp16=device_fp16)
+        
+        if adapter_ckpt.exists():
+            from cosyvoice.utils.lora import inject_lora, load_lora_state_dict
+            llm = cosyvoice.model.llm
+            target_count = inject_lora(llm, rank=16, alpha=32.0, dropout=0.05)
+            load_lora_state_dict(
+                llm, torch.load(adapter_ckpt, map_location="cpu", weights_only=False)
+            )
+            llm.to(cosyvoice.model.device).eval()
+            print(f"Loaded RegaLabs-TTS Sorani LLM adapter ({target_count} projections).")
         
         if flow_ckpt.exists():
             from sorani.censor import verify_checkpoint
@@ -165,8 +176,8 @@ with gr.Blocks(title="RegaLabs-TTS: Sorani Speech Synthesis", css=custom_css) as
             
             prompt_text_input = gr.Textbox(
                 label="Reference Voice Transcript (دەقی دەنگی نموونەکە)",
-                placeholder="ئەمە دەنگی نموونەیە",
-                value="ئەمە دەنگی نموونەیە",
+                placeholder="دەنگێکی لەسەرخۆ، هێمن و پڕ لە بڕوابەخۆبوون.",
+                value="دەنگێکی لەسەرخۆ، هێمن و پڕ لە بڕوابەخۆبوون.",
                 lines=2,
             )
             

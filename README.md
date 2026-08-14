@@ -49,12 +49,16 @@ pip install git+https://github.com/RegaLabs/RegaLabs-TTS.git
 git clone --recursive https://github.com/FunAudioLLM/CosyVoice.git
 export COSYVOICE_REPO=$(pwd)/CosyVoice
 
-# Run RegaLabs-TTS synthesis
+# Download the model artifacts from Hugging Face
+git clone https://huggingface.co/RegaLabs/RegaLabs-TTS regalabs-tts-weights
+
+# Run RegaLabs-TTS synthesis (adapter required for Sorani speech)
 python run_regalabs_tts.py \
   --base-model FunAudioLLM/Fun-CosyVoice3-0.5B-2512 \
-  --flow-checkpoint /path/to/cosyvoice3_sorani_flow_best_step2300.pt \
-  --prompt-wav samples/aran_en021.wav \
-  --prompt-text "ئەمە دەنگی نموونەیە" \
+  --flow-checkpoint regalabs-tts-weights/cosyvoice3_sorani_flow_best_step2300.pt \
+  --adapter regalabs-tts-weights/cosyvoice3_sorani_lora_refined_best.pt \
+  --prompt-wav regalabs-tts-weights/samples/aran_en021.wav \
+  --prompt-text "دەنگێکی لەسەرخۆ، هێمن و پڕ لە بڕوابەخۆبوون." \
   --text "سڵاو لە تەواوی كوردستان" \
   --out output_sorani.wav
 ```
@@ -73,7 +77,7 @@ python app.py
 - `sorani/censor.py` — Fail-closed Sorani sexual-word filter with integrity checks (see below).
 - `sorani/infer_lora.py` — Zero-shot inference runner for loading flow checkpoints and optional LLM adapters.
 - `sorani/batch_infer.py` — Batch regression and dataset testing runner.
-- `run_regalabs_tts.py` — Standalone execution runner.
+- `run_regalabs_tts.py` — Standalone execution runner (requires the LLM adapter, downloaded from Hugging Face).
 - `app.py` — Gradio Live Web Demo UI.
 - `samples/aran_en021.wav` — Sample audio snippet.
 - `assets/` — Project banners & graphics.
@@ -85,10 +89,7 @@ python app.py
 
 RegaLabs-TTS ships with a **fail-closed Sorani content filter** (`sorani/censor.py`). Sexual obscenities are bleeped (`......`) before synthesis instead of being spoken.
 
-* **Blocked vocabulary** (verified against public dictionaries, 2026-08-15):
-  * `کێر`, `کیر` (penis) — [ckb.wiktionary.org/wiki/کێر](https://ckb.wiktionary.org/wiki/کێر), [ku.wiktionary.org/wiki/kîr](https://ku.wiktionary.org/wiki/kîr)
-  * `قوز`, `قووز`, `کوز`, `کووز` (vulva) — [ku.wiktionary.org/wiki/quz](https://ku.wiktionary.org/wiki/quz)
-  * Inflected forms (کێرەکە، کیرەکانم، قوزەکە...) and Arabic-kaf variants (كێر) are caught automatically.
+* **Blocked vocabulary:** a curated, dictionary-verified blocklist of Sorani sexual obscenities (the exact terms are defined in `sorani/censor.py`). Inflected forms and spelling variants are caught automatically.
 * **Tamper protection:** the word list is SHA-256-signed, and the flow checkpoint must match the official SHA-256 (`033abd6f...`). If either is modified, synthesis refuses to run — the model "breaks itself" rather than speaking uncensored.
 * **Re-signing (only for official model updates):** `python sorani/censor.py --rehash` re-signs the word list; `python sorani/censor.py --sign-checkpoint PATH` signs a newly released official checkpoint.
 * **Honest limitation:** TTS censorship lives in the text layer (the weights themselves cannot refuse words), so a determined attacker with full code access can patch the checks out. This protects against accidental or naive removal and model swaps, not against deliberate reverse engineering.
