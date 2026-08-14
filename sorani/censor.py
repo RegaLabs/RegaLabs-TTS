@@ -48,6 +48,8 @@ from pathlib import Path
 # كێر / يزنی-style spellings are caught automatically.
 SORANI_SEX_TERMS: tuple[str, ...] = (
     "کێر", "کیر", "قوز", "قووز", "کوز", "کووز",
+    "گەنە", "گنە", "گێنە", "کۆند",
+    "لەشفرۆش", "نێرینەباز", "هەرزەکار", "داوێنپیسی",
 )
 
 # What censored words are replaced with (a bleep: long pause in TTS).
@@ -117,7 +119,7 @@ def _wordlist_digest() -> str:
 EXPECTED_FLOW_SHA256 = "033abd6fcb88c8069a24ac7215dfaac92b2526ee687a05dc0e327693a1cea75c"
 
 # Digest of SORANI_SEX_TERMS above. Regenerate with: python -m sorani.censor --rehash
-_WORDLIST_SHA256 = "25ca7c6b6f724b0f5a68886a6526410e1dda1d42de18cbd3fd927465363a0263"
+_WORDLIST_SHA256 = "46d817e0990dd656956d771579483d2906d010739224e732bee20797428d667c"
 
 
 def verify_wordlist() -> None:
@@ -215,6 +217,13 @@ def main() -> int:
         assert censor_text("کیرەکانی") == "......"
         assert censor_text("قوزەکە") == "......"
         assert censor_text("کوزەکانی") == "......"
+        assert censor_text("گەنە و کۆند") == "...... و ......"
+        assert censor_text("لەشفرۆشەکە") == "......"
+        assert censor_text("نێرینەبازی") == "......"
+        assert censor_text("هەرزەکارەکە") == "......"
+        assert censor_text("داوێنپیسی") == "......"
+        assert censor_text("گەن") == "گەن"  # rotten, not a match
+        assert censor_text("هەرزە") == "هەرزە"  # nonsense, not a match
         verify_wordlist()
         original = SORANI_SEX_TERMS
         try:
