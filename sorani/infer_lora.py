@@ -12,6 +12,19 @@ from pathlib import Path
 import soundfile as sf
 import torch
 
+try:
+    from sorani.censor import verify_checkpoint
+except ImportError:
+    try:
+        from .censor import verify_checkpoint
+    except ImportError:
+        _spec = importlib.util.spec_from_file_location(
+            "sorani_censor", Path(__file__).with_name("censor.py")
+        )
+        _module = importlib.util.module_from_spec(_spec)
+        _spec.loader.exec_module(_module)
+        verify_checkpoint = _module.verify_checkpoint
+
 
 def load_normalizer(path: Path):
     spec = importlib.util.spec_from_file_location("sorani_normalizer", path)
@@ -68,6 +81,7 @@ def main() -> None:
     print(f"loaded adapter with {target_count} target projections", flush=True)
 
     if args.flow_checkpoint:
+        verify_checkpoint(args.flow_checkpoint)
         flow_state = torch.load(
             args.flow_checkpoint, map_location="cpu", weights_only=False
         )

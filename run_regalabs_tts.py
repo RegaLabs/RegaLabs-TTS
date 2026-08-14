@@ -11,6 +11,7 @@ import soundfile as sf
 # Add sorani module to path
 sys.path.insert(0, str(Path(__file__).parent))
 from sorani.frontend import normalize_sorani_text
+from sorani.censor import verify_checkpoint
 
 def parse_args():
     parser = argparse.ArgumentParser(description="RegaLabs-TTS Sorani Synthesis")
@@ -42,6 +43,7 @@ def main():
     print(f"Loading base model: {args.base_model}...")
     cosyvoice = CosyVoice3(args.base_model, fp16=torch.cuda.is_available())
     
+    verify_checkpoint(args.flow_checkpoint)
     print(f"Loading RegaLabs-TTS Sorani flow checkpoint: {args.flow_checkpoint}...")
     flow_state = torch.load(args.flow_checkpoint, map_location="cpu", weights_only=False)
     if isinstance(flow_state, dict):
@@ -58,6 +60,8 @@ def main():
     # Normalize Sorani Kurdish Text
     clean_text = normalize_sorani_text(args.text)
     clean_prompt_text = normalize_sorani_text(args.prompt_text)
+    if "<|endofprompt|>" not in clean_prompt_text:
+        clean_prompt_text = f"You are a helpful assistant.<|endofprompt|> {clean_prompt_text}"
     
     print(f"Normalized input text: '{clean_text}'")
     print("Synthesizing speech...")

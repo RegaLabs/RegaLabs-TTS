@@ -25,12 +25,28 @@ except ImportError:
     import unicodedata
     import re
 
+    try:
+        from sorani.censor import censor_text, verify_wordlist
+    except ImportError:
+        from sorani.censor import CensorIntegrityError
+
+        def censor_text(text):
+            raise CensorIntegrityError(
+                "Sorani censorship module (sorani/censor.py) is missing. "
+                "RegaLabs-TTS refuses to synthesize without it."
+            )
+
+        def verify_wordlist():
+            raise CensorIntegrityError("Sorani censorship module is missing.")
+
     _CHARACTER_MAP = str.maketrans({"ك": "ک", "ي": "ی", "ى": "ی", "ة": "ە"})
     def normalize_sorani_text(text: str) -> str:
         if not text:
             return ""
         text = unicodedata.normalize("NFKC", text).translate(_CHARACTER_MAP)
         text = re.sub(r"[\u064B-\u065F]", "", text)
+        text = censor_text(text)
+        verify_wordlist()
         return re.sub(r"\s+", " ", text).strip()
 
 # Global model instance
@@ -55,6 +71,8 @@ def get_model():
         cosyvoice = CosyVoice3(base_model, fp16=device_fp16)
         
         if flow_ckpt.exists():
+            from sorani.censor import verify_checkpoint
+            verify_checkpoint(flow_ckpt)
             print(f"Loading RegaLabs-TTS Sorani flow weights: {flow_ckpt}...")
             flow_state = torch.load(flow_ckpt, map_location="cpu", weights_only=False)
             if isinstance(flow_state, dict):

@@ -12,6 +12,23 @@ from __future__ import annotations
 import re
 import unicodedata
 
+try:
+    from sorani.censor import censor_text, verify_wordlist
+except ImportError:
+    try:
+        from .censor import censor_text, verify_wordlist
+    except ImportError:
+        import importlib.util as _importlib_util
+        from pathlib import Path as _Path
+
+        _spec = _importlib_util.spec_from_file_location(
+            "sorani_censor", _Path(__file__).with_name("censor.py")
+        )
+        _module = _importlib_util.module_from_spec(_spec)
+        _spec.loader.exec_module(_module)
+        censor_text = _module.censor_text
+        verify_wordlist = _module.verify_wordlist
+
 
 _CHARACTER_MAP = str.maketrans({
     "ك": "ک",  # Arabic kaf -> Kurdish kaf
@@ -106,6 +123,8 @@ def normalize_sorani_text(text: str) -> str:
     text = expand_numbers(text)
     text = text.replace("؟", "؟").replace("?", "؟")
     text = text.replace(";", "؛").replace(",", "،")
+    text = censor_text(text)
+    verify_wordlist()
     return re.sub(r"\s+", " ", text).strip()
 
 

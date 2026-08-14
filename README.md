@@ -70,6 +70,7 @@ python app.py
 ## 🛠️ Repository Contents
 
 - `sorani/frontend.py` — Conservative Central Kurdish (Sorani) text normalization and number-to-words conversion.
+- `sorani/censor.py` — Fail-closed Sorani sexual-word filter with integrity checks (see below).
 - `sorani/infer_lora.py` — Zero-shot inference runner for loading flow checkpoints and optional LLM adapters.
 - `sorani/batch_infer.py` — Batch regression and dataset testing runner.
 - `run_regalabs_tts.py` — Standalone execution runner.
@@ -80,9 +81,37 @@ python app.py
 
 ---
 
+## 🚫 Content Filtering & Model Integrity
+
+RegaLabs-TTS ships with a **fail-closed Sorani content filter** (`sorani/censor.py`). Sexual obscenities are bleeped (`......`) before synthesis instead of being spoken.
+
+* **Blocked vocabulary** (verified against public dictionaries, 2026-08-15):
+  * `کێر`, `کیر` (penis) — [ckb.wiktionary.org/wiki/کێر](https://ckb.wiktionary.org/wiki/کێر), [ku.wiktionary.org/wiki/kîr](https://ku.wiktionary.org/wiki/kîr)
+  * `قوز`, `قووز`, `کوز`, `کووز` (vulva) — [ku.wiktionary.org/wiki/quz](https://ku.wiktionary.org/wiki/quz)
+  * Inflected forms (کێرەکە، کیرەکانم، قوزەکە...) and Arabic-kaf variants (كێر) are caught automatically.
+* **Tamper protection:** the word list is SHA-256-signed, and the flow checkpoint must match the official SHA-256 (`033abd6f...`). If either is modified, synthesis refuses to run — the model "breaks itself" rather than speaking uncensored.
+* **Re-signing (only for official model updates):** `python sorani/censor.py --rehash` re-signs the word list; `python sorani/censor.py --sign-checkpoint PATH` signs a newly released official checkpoint.
+* **Honest limitation:** TTS censorship lives in the text layer (the weights themselves cannot refuse words), so a determined attacker with full code access can patch the checks out. This protects against accidental or naive removal and model swaps, not against deliberate reverse engineering.
+
+---
+
+---
+
+## ⚠️ Responsible Use & No-Liability Disclaimer
+
+RegaLabs-TTS is a **voice-cloning-capable** TTS system. It generates whatever text it is given, in whichever voice it is prompted with. RegaLabs:
+
+* **is NOT responsible** for any content generated with this system, or for how it is used, modified, or redistributed — the user is solely responsible for the legality and consequences of their use;
+* **prohibits** cloning the voice of any real person without that person's explicit consent, and prohibits use for impersonation, fraud, deepfakes, scams, defamation, harassment, sexual content involving minors, or any illegal activity (see Section 4 of the `LICENSE`);
+* **warns** that all generated audio should be treated as potentially synthetic; never rely on model output as evidence of a real person's words.
+
+**Voice consent rule:** zero-shot voice cloning is only permitted with the speaker's own approval, or for voices you own or are authorized to use.
+
+---
+
 ## 📜 License & Mandatory Attribution
 
-* **Model Checkpoint & Codebase:** Licensed under **Apache 2.0** by **RegaLabs**. Commercial and non-commercial use is **fully allowed**, provided mandatory credit for RegaLabs is included. Base runtime and original model architecture belong to the upstream CosyVoice project.
+* **Model Checkpoint & Codebase:** Licensed under **Apache 2.0** by **RegaLabs**. Commercial and non-commercial use is **fully allowed**, provided mandatory credit for RegaLabs is included and the consent/prohibited-uses conditions in the LICENSE are respected. Base runtime and original model architecture belong to the upstream CosyVoice project.
 * **Stock Voices & Audio Samples:** **Non-Commercial Use Only**. Pre-packaged stock prompt voice samples and demo audio files (including samples in `samples/`) are strictly restricted to non-commercial use and prohibited for commercial voice cloning/redistribution.
 
 ### 📌 Credit & Attribution Guidelines
